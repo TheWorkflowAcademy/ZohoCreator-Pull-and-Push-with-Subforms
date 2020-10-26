@@ -34,3 +34,19 @@ for each  page in pageIterationList
 }
 // Check for correctness
 info "Number of Records: " + allRecords.size();
+
+n = 0;
+for each  r in allRecords
+{
+		// Declaring the row
+		row_n = Student_Review_Form.List_of_Students();
+		// Assigning values to subform fields in the row
+		row_n.Student_Name = r.get("First_Name") + " " + r.get("Last_Name");
+		row_n.Student_ID = r.get("id");
+		// declare a variable to hold the collection of rows
+		update = Collection();
+		update.insert(row_n);
+		// insert the rows into the subform through the variable
+		input.List_of_Students.insert(update);
+		n = n + 1;
+}
