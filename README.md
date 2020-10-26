@@ -2,7 +2,7 @@
 A Deluge script that pulls records from Books/ CRM other database into a Creator Form as Subform Rows, and then push changes to each individual record (or perform other actions like creating records) in the parent system.
 
 ## Core Idea
-Suppose you have a long list of records in Books/ CRM/ other database that needs to be manually reviewed before you decide to execute an action. Instead of going through each and every record on the database (which is tideous and inefficient), a custom function can be written to **pull** relevant record information from the database into Creator as Subform Rows. A Decision Box field will be set as a trigger for each row on the subform to **push** the necessary actions upon form submission when ticked. 
+Suppose you have a long list of records in Books/ CRM/ other database that needs to be manually reviewed before you decide to execute certain actions. Instead of going through each and every record on the database (which is tideous and inefficient), a custom function can be written to **pull** relevant record information from the database into Creator as Subform Rows. A Decision Box field will be set as a trigger for each row on the subform to **push** the necessary actions upon form submission when ticked. 
 
 ## Example Case 1 (Zoho Books)
 To aid the illustration, we will use an example case: Periodically, the accounting team needs to review all overdue invoices from Zoho Books, and decide if they want to levy a finance charge (late fee) on each of the invoices.
