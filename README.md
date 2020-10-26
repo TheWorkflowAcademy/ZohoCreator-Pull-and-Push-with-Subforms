@@ -1,14 +1,14 @@
 # ZohoCreator-Pull-and-Push-with-Subforms
-A Deluge script that pulls records from Books/ CRM/ other database into a Creator Form as Subform Rows, and then push changes to each individual record (or perform other actions like creating records) in the parent system.
+A Deluge script that pulls records from Books/ CRM/ other database into a Zoho Creator Form as Subform Rows, and then push changes to each individual record (or perform other actions like creating records) in the parent system.
 
 ## Core Idea
-Suppose you have a long list of records in Books/ CRM/ other database that needs to be manually reviewed before you decide to execute certain actions. Instead of going through each and every record on the database (which is tideous and inefficient), a custom function can be written to **pull** relevant record information from the database into Creator as Subform Rows. A Decision Box field will be set as a trigger for each row on the subform to **push** the necessary actions upon form submission when ticked. 
+Suppose you have a long list of records in Books/ CRM/ other database that needs to be manually reviewed before you decide to execute certain actions. Instead of going through each and every record on the database (which is tideous and inefficient), custom functions can be written to **pull** relevant record information from the database into Creator as Subform Rows. A Decision Box field will be set as a trigger for each row on the subform to **push** the necessary actions upon form submission when ticked. 
 
 ## Example Case 1 (Zoho Books)
 To aid the illustration, we will use an example case: Periodically, the accounting team needs to review all overdue invoices from Zoho Books, and decide if they want to levy a finance charge (late fee) on each of the invoices.
 
 ## Configuration
-* A Creator Form has to be created with a subform containing all necessary fields you would want to pull from Books for reviewing purposes and for the function to work (these can be hidden fields - admin only). In this example, we need the following:
+* A Creator Form has to be created with a subform containing all necessary fields from Books for reviewing purposes and for the function to work (these can be hidden fields - admin only). In this example, we need the following:
   * Customer Name
   * Invoice No
   * Due Date
@@ -23,7 +23,7 @@ To aid the illustration, we will use an example case: Periodically, the accounti
   * Current Finance Charge Date (populates the date of the latest finance charge if a charge has been levied on the invoice before).
 * Several custom fields need to be created in Books - this depends on what you want to achieve. For this example, we need the following custom fields:
   * Current Finance Charge [Date Field]
-    * If a finance charge has been levied on an invoice before, it will print out the date of the finance charge invoice creation. If the original invoice has had 2 charges levied over the course of 2 months, the field will show the latest finance charge date (we can rename the field to maybe "Latest Finance Charge Date" to make it easier to understand).
+    * If a finance charge has been levied on an invoice before, it will print out the date of the finance charge invoice creation. If the original invoice has had 2 charges levied over the course of 2 months, the field will show the latest finance charge date.
   * Finance Charge Invoice(s) [Multi-Line Field]
     * A field that stores every single finance charge invoice no. ever created for the overdue invoice. If an overdue invoice has 4 finance charge invoices, it will print all 4 with line breaks. This will be for the accountant’s reference.
   * FC [Checkbox Field]
@@ -37,7 +37,7 @@ The following connections need to be set up in Creator (Main Dashboard > Account
 * ZohoBooks.invoices.UPDATE
 
 ## PART 1 - PULL
-Get all Overdue Invoices from Zoho Books, and pull the necessary fields to a subform in Creator. Here, accountants get to view all overdue invoices in one screen and tick the rows where late fees should be charged. The following script needs to be written on load of the Creator form.
+Get all Overdue Invoices from Zoho Books, and pull the necessary fields to a subform in Creator. Here, accountants get to view all overdue invoices in one screen and tick the rows where late fees should be charged. The following script needs to be written **on load** of the Creator form.
 * Record Event (Created) > Form Event (Load of the Form)
 
 ### Get the Org ID
@@ -98,7 +98,7 @@ info "Number of Records: " + allRecords.size();
 ```
 
 ### Pull required record info to the Creator Subform
-For each record, we get the necessary fields from Books, and assign values to the subform fields. Change the row names `row_n` & field API names `r.get("field_name")` based on your own requirements. When this is completed, you will get all the fields of the records you need populated in the Creator subform upon the load of the form, ready for review. 
+For each record, we get the necessary fields from Books, and assign values to the subform fields. When this is completed, you will get all the fields of the records you need populated in the Creator subform upon the load of the form, ready for review. 
 
 ```javascript
 n = 0;
@@ -125,13 +125,14 @@ for each  r in allRecords
 		n = n + 1;
 }
 ```
+*Note: Change the row names `row_n` & field API names `r.get("field_name")` based on your requirements. 
 
 ## PART 2 - PUSH
 When the accounting team is done reviewing the invoices, upon submission of the form, 2 main actions are executed for rows where the "Levy Finance Charge" field is ticked (detailed mechanics and criteria to be explained as we go):
 * Create Finance Charge Invoices in Books.
 * Information pushed in the Original Invoice in Books.
 
-The following script needs to be written on submission of the Creator form.
+The following script needs to be written **on submission** of the Creator form.
   * Record Event (Created) > Form Event (Successful Form Submissions)
 
 ### Get the Org ID
@@ -293,11 +294,11 @@ for each  c in customerIDs
 We have demonstrated how this works with Zoho Books. Now, we will use another example case for Zoho CRM: You are running an online course business and you would like your teachers to leave a remark on certain students which are exceptional (all students are stored in the Contacts module).
 
 ## Configuration
-* A Creator Form has to be created with a subform containing all necessary fields you would want to pull from Books for reviewing purposes and for the function to work (these can be hidden fields - admin only). In this example, we need the following:
+* A Creator Form has to be created with a subform containing all necessary fields from CRM for reviewing purposes and for the function to work (these can be hidden fields - admin only). In this example, we need the following:
   * Student Name
   * Student ID (admin only)
 * Custom fields can be added into the subform on Creator. This is arbitrary based on your objective. In this example, the following will be added:
-  * Levy Finance Charge (Decision Box field for teachers to tick for students which they have remarks for).
+  * Update (Decision Box field for teachers to tick for students which they have remarks for).
     * This field acts as a filter for the function execution (on submission, the actions will be executed for every row that has the decision box checked).
   * Teacher's Remark (multi-line field)
     * For teacher's to key in their individual remarks about the students
@@ -308,7 +309,7 @@ The following connections need to be set up in Creator (Main Dashboard > Account
 * ZohoCRM.modules.ALL
 
 ## PART 1 - PULL
-Get all Contacts from Zoho CRM, and pull the necessary fields to a subform in Creator. Here, teachers get to view all students in one screen and leave their remarks. The following script needs to be written on load of the Creator form.
+Get all Contacts from Zoho CRM, and pull the necessary fields to a subform in Creator. Here, teachers get to view all students in one screen and leave their remarks. The following script needs to be written **on load** of the Creator form.
 * Record Event (Created) > Form Event (Load of the Form)
 
 ### Get all required Records in a List
@@ -355,7 +356,7 @@ info "Number of Records: " + allRecords.size();
 ```
 
 ### Pull required record info to the Creator Subform
-For each record, we get the necessary fields from Books, and assign values to the subform fields. Change the row names `row_n` & field API names `r.get("field_name")` based on your own requirements. When this is completed, you will get all the fields of the records you need populated in the Creator subform upon the load of the form, ready for review. 
+For each record, we get the necessary fields from Books, and assign values to the subform fields. When this is completed, you will get all the fields of the records you need populated in the Creator subform upon the load of the form, ready for review. 
 
 ```javascript
 n = 0;
@@ -374,13 +375,14 @@ for each  r in allRecords
 		n = n + 1;
 }
 ```
+*Change the row names `row_n` & field API names `r.get("field_name")` based on your requirements.
 
 ## PART 2 - PUSH
-When the teachers are done reviewing the students, upon submission of the form, the function will then **push** the remark and update into CRM. The following script needs to be written on submission of the Creator form.
+When the teachers are done reviewing the students, upon submission of the form, the function will then **push** the remark and update into CRM. The following script needs to be written **on submission** of the Creator form.
   * Record Event (Created) > Form Event (Successful Form Submissions)
 
 ### Push updates to record in CRM
-For each student in the subform, if the Update Decision Box is ticked, the function will get the remark keyed in by the teacher, and populate the similar "Teacher's Remark" field in CRM accordingly.
+For each student in the subform, if the "Update" Decision Box is ticked, the function will get the remark keyed in by the teacher, and update the similar "Teacher's Remark" field in CRM accordingly.
 
 ```javascript
 for each  row in List_of_Students
