@@ -1,0 +1,47 @@
+//Get the Org ID
+getOrganizations = invokeurl
+[
+	url :"https://books.zoho.com/api/v3/organizations"
+	type :GET
+	connection:"zohobooks" // Change this to your connection name
+];
+orgId = getOrganizations.get("organizations").get(0).get("organization_id");
+info orgId;
+
+// List of page numbers. This should start with '1' and be much longer than the expected number of pages.
+pageIterationList = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25};
+// Number of results to return per page. DO NOT exceed the per_page limit of your API, or this function will not perform correctly.
+perPageLimit = 200;
+// List to accumulate all records
+allRecords = List();
+// The 'while' condition for evaluation. While this is 'false', the API requests will continue. 
+iterationComplete = false;
+// Loop over each page in the page list
+for each  page in pageIterationList
+{
+	// Evaluate whether 'while' condition is satisfied
+	if(iterationComplete == false)
+	{
+		paramap = Map();                                //Change the paramap based on your requirement
+		paramap.put("status","overdue");
+		paramap.put("cf_fc",false);
+		paramap.put("sort_column","customer_name");
+		response = invokeurl
+[
+	url :"https://books.zoho.com/api/v3/invoices?organization_id=" + orgId + "&page=" + page + "&per_page=" + perPageLimit
+	type :GET
+	parameters:paramap
+	connection:"zohobooks"  // Change this to your connection name
+];
+		// Get records from API response. Add them to allRecords list.
+		records = response.get("invoices");
+		allRecords.addAll(records);
+		// Update 'while' condition status
+		if(records.size() < perPageLimit)
+		{
+			iterationComplete = true;
+		}
+	}
+}
+// Check for correctness
+info "Number of Records: " + allRecords.size();
