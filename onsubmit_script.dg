@@ -1,0 +1,133 @@
+//Get the Org ID
+getOrganizations = invokeurl
+[
+	url :"https://books.zoho.com/api/v3/organizations"
+	type :GET
+	connection:"zohobooks" // Change this to your connection name
+];
+orgId = getOrganizations.get("organizations").get(0).get("organization_id");
+info orgId;
+
+customerIDs = List();
+for each  row in Overdue_Invoices
+{
+	if(row.Levy_Finance_Charge = true)
+	{
+		if(!customerIDs.contains(row.Customer_ID))
+		{
+			customerIDs.add(row.Customer_ID);
+		}
+	}
+}
+
+for each  c in customerIDs
+{
+	prevFC = "";
+	currFC = "";
+	line_items = List();
+	invoiceIDList = List();
+  
+	for each  row in Overdue_Invoices
+	{
+		if(row.Levy_Finance_Charge = true)
+		{
+			if(c = row.Customer_ID)
+			{
+				line_item = Map();
+				line_item.put("description",row.Invoice_No);
+				line_item.put("rate",row.Interest_Charge);
+				line_item.put("item_id",2066391000003720076);   // This is a custom item created for Finance Charge. Create your own and replace the ID here.
+				line_item.put("quantity",1);
+				line_items.add(line_item);
+				invoiceIDList.add(row.Invoice_ID);
+			}
+		}
+	}
+  
+	invoicemap = Map();
+	invoicemap.put("customer_id",c);
+	invoicemap.put("date",today);
+	invoicemap.put("due_date",today.addBusinessDay(10));
+	invoicemap.put("line_items",line_items);
+  
+	// Create List of Custom Fields to Check the FC field
+	customFieldList2 = List();
+	customFieldMap3 = Map();
+	customFieldMap3.put("label","FC");
+	customFieldMap3.put("value",true);
+	customFieldList2.add(customFieldMap3);
+	invoicemap.put("custom_fields",customFieldList2);
+  
+  // Create the Invoice
+	createInvoice = zoho.books.createRecord("Invoices",orgId.toString(),invoicemap);
+	info createInvoice;
+  
+	//Mark created invoice as sent
+	marksent = invokeurl
+[
+	url :"https://books.zoho.com/api/v3/invoices/" + createInvoice.get("invoice").get("invoice_id") + "/status/sent?organization_id=" + orgId
+	type :POST
+	connection:"zohobooks"  // Change this to your connection name
+];
+	info marksent;
+  
+	currentDate = zoho.currentdate.toString("yyyy-MM-dd");
+	//info currentDate;
+  
+	// Create List of Custom Fields for Current Finance Charge
+	financeCharge = Map();
+	customFieldList = List();
+	customFieldMap1 = Map();
+	customFieldMap1.put("label","Current Finance Charge");
+	customFieldMap1.put("value",currentDate);
+	customFieldList.add(customFieldMap1);
+	
+  for each  row in Overdue_Invoices
+	{
+		if(row.Levy_Finance_Charge = true)
+		{
+			if(c = row.Customer_ID)
+			{
+				// Get current CF Invoice no
+				currFC = createInvoice.get("invoice").get("invoice_number");
+        
+        // Get the original Invoice no
+				oriInvoice = zoho.books.getRecordsByID("invoices",orgId,row.Invoice_ID);
+        
+				// Get previous CF invoice no. if exists
+				if(oriInvoice.get("invoice").get("custom_field_hash").get("cf_finance_charge_invoices") != null)
+				{
+					prevFC = oriInvoice.get("invoice").get("custom_field_hash").get("cf_finance_charge_invoices");
+					prevFC = prevFC + "\n";
+					fcInvoice = prevFC + currFC;
+				}
+				else
+				{
+					fcInvoice = currFC;
+				}
+				info "oriInvoice" : + oriInvoice;
+				info "fcInvoice: " + fcInvoice;
+			}
+		}
+	}
+  
+	// Create List of Custom Fields for Finance Charge Invoice(s)
+	customFieldMap2 = Map();
+	customFieldMap2.put("label","Finance Charge Invoice(s)");
+	customFieldMap2.put("value",fcInvoice);
+	customFieldList.add(customFieldMap2);
+	
+  // Add all Custom Field Maps into Custom Field List
+	financeCharge.put("custom_fields",customFieldList);
+	for each  id in invoiceIDList
+	{
+		updateInvoice = invokeurl
+[
+	url :"https://books.zoho.com/api/v3/invoices/" + id + "?organization_id=" + orgId
+	type :PUT
+	parameters:financeCharge + ""
+	connection:"zohobooks"  // Change this to your connection name
+];
+		info updateInvoice;
+	}
+}
