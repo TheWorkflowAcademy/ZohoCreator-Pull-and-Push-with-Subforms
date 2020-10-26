@@ -125,7 +125,7 @@ for each  r in allRecords
 		n = n + 1;
 }
 ```
-*Note: Change the row names `row_n` & field API names `r.get("field_name")` based on your requirements. 
+*Note: Change the row names `row_n` & field API names `r.get("field_name")` based on your requirements.*
 
 ## PART 2 - PUSH
 When the accounting team is done reviewing the invoices, upon submission of the form, 2 main actions are executed for rows where the "Levy Finance Charge" field is ticked (detailed mechanics and criteria to be explained as we go):
@@ -375,7 +375,7 @@ for each  r in allRecords
 		n = n + 1;
 }
 ```
-*Change the row names `row_n` & field API names `r.get("field_name")` based on your requirements.
+*Note: Change the row names `row_n` & field API names `r.get("field_name")` based on your requirements.*
 
 ## PART 2 - PUSH
 When the teachers are done reviewing the students, upon submission of the form, the function will then **push** the remark and update into CRM. The following script needs to be written **on submission** of the Creator form.
