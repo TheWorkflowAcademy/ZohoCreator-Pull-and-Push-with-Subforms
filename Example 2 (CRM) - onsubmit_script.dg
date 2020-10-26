@@ -1,0 +1,24 @@
+for each  row in List_of_Students
+{
+	if(row.Update == true)
+	{
+		//Create map for update
+		data = List();
+		content = Map();
+		content.put("id", row.Student_ID);
+		content.put("Teacher_s_Remark",row.Teacher_s_Remark);
+		data.add(content);
+		mp = Map();
+		mp.put("data", data);
+
+		//Update record in CRM
+		response = invokeurl
+		[
+			url :"https://www.zohoapis.com/crm/v2/Contacts"
+			type :PUT
+			parameters:mp.toString()
+			connection:"zohocrm"	// Change this to your connection name
+		];
+		info response;
+	}
+}
