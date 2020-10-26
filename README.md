@@ -1,5 +1,5 @@
 # ZohoCreator-Pull-and-Push-with-Subforms
-A Deluge script that pulls records from Books/ CRM/ other database into a Zoho Creator Form as Subform Rows, and then push changes to each individual record (or perform other actions like creating records) in the parent system.
+A Deluge script that pulls records from Books/CRM/another database into a Zoho Creator Form as Subform Rows, and then push changes to each individual record (or perform other actions like creating records) in the parent system.
 
 ## Core Idea
 Suppose you have a long list of records in Books/ CRM/ other database that needs to be manually reviewed before you decide to execute certain actions. Instead of going through each and every record on the database (which is tideous and inefficient), custom functions can be written to **pull** relevant record information from the database into Creator as Subform Rows. A Decision Box field will be set as a trigger for each row on the subform to **push** the necessary actions upon form submission when ticked. 
