@@ -290,7 +290,7 @@ for each  c in customerIDs
 ```
 
 ## Example Case 2 (CRM)
-We have demonstrated how this works with Zoho Books in the main branch. Now, we will use another example case for Zoho CRM: You are running an online course business and you would like your teachers to leave a remark on certain students which are exceptional (all students are stored in the Contacts module).
+We have demonstrated how this works with Zoho Books. Now, we will use another example case for Zoho CRM: You are running an online course business and you would like your teachers to leave a remark on certain students which are exceptional (all students are stored in the Contacts module).
 
 ## Configuration
 * A Creator Form has to be created with a subform containing all necessary fields you would want to pull from Books for reviewing purposes and for the function to work (these can be hidden fields - admin only). In this example, we need the following:
