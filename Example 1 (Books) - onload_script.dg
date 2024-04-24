@@ -3,7 +3,8 @@ getOrganizations = invokeurl
 [
 	url :"https://books.zoho.com/api/v3/organizations"
 	type :GET
-	connection:"zohobooks" // Change this to your connection name
+	connection:"zohobooks" 
+	// Change this to your connection name
 ];
 orgId = getOrganizations.get("organizations").get(0).get("organization_id");
 info orgId;
@@ -22,7 +23,8 @@ for each  page in pageIterationList
 	// Evaluate whether 'while' condition is satisfied
 	if(iterationComplete == false)
 	{
-		paramap = Map();                                //Change the paramap based on your requirement
+		paramap = Map();  
+		 //Change the paramap based on your requirement
 		paramap.put("status","overdue");
 		paramap.put("cf_fc",false);
 		paramap.put("sort_column","customer_name");
@@ -31,7 +33,8 @@ for each  page in pageIterationList
 	url :"https://books.zoho.com/api/v3/invoices?organization_id=" + orgId + "&page=" + page + "&per_page=" + perPageLimit
 	type :GET
 	parameters:paramap
-	connection:"zohobooks"  // Change this to your connection name
+	connection:"zohobooks"  
+	// Change this to your connection name
 ];
 		// Get records from API response. Add them to allRecords list.
 		records = response.get("invoices");
