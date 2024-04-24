@@ -48,7 +48,7 @@ getOrganizations = invokeurl
 [
 	url :"https://books.zoho.com/api/v3/organizations"
 	type :GET
-	connection:"zohobooks" // Change this to your connection name
+	connection:"yourConnectionName"
 ];
 orgId = getOrganizations.get("organizations").get(0).get("organization_id");
 info orgId;
@@ -146,7 +146,7 @@ getOrganizations = invokeurl
 [
 	url :"https://books.zoho.com/api/v3/organizations"
 	type :GET
-	connection:"zohobooks" // Change this to your connection name
+	connection:"yourConnectionName"
 ];
 orgId = getOrganizations.get("organizations").get(0).get("organization_id");
 info orgId;

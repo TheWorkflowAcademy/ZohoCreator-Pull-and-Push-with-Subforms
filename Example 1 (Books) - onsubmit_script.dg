@@ -3,8 +3,7 @@ getOrganizations = invokeurl
 [
 	url :"https://books.zoho.com/api/v3/organizations"
 	type :GET
-	connection:"zohobooks" 
-	// Change this to your connection name
+	connection:"yourConnectionName"
 ];
 orgId = getOrganizations.get("organizations").get(0).get("organization_id");
 info orgId;
@@ -129,8 +128,7 @@ for each  c in customerIDs
 	url :"https://books.zoho.com/api/v3/invoices/" + id + "?organization_id=" + orgId
 	type :PUT
 	parameters:financeCharge + ""
-	connection:"zohobooks"  
-	// Change this to your connection name
+	connection:"yourConnectionName"
 ];
 		info updateInvoice;
 	}
