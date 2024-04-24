@@ -3,7 +3,8 @@ getOrganizations = invokeurl
 [
 	url :"https://books.zoho.com/api/v3/organizations"
 	type :GET
-	connection:"zohobooks" // Change this to your connection name
+	connection:"zohobooks" 
+	// Change this to your connection name
 ];
 orgId = getOrganizations.get("organizations").get(0).get("organization_id");
 info orgId;
@@ -36,7 +37,8 @@ for each  c in customerIDs
 				line_item = Map();
 				line_item.put("description",row.Invoice_No);
 				line_item.put("rate",row.Interest_Charge);
-				line_item.put("item_id",2066391000003720076);   // This is a custom item created for Finance Charge. Create your own and replace the ID here.
+				line_item.put("item_id",2066391000003720076);   
+				// This is a custom item created for Finance Charge. Create your own and replace the ID here.
 				line_item.put("quantity",1);
 				line_items.add(line_item);
 				invoiceIDList.add(row.Invoice_ID);
@@ -67,7 +69,8 @@ for each  c in customerIDs
 [
 	url :"https://books.zoho.com/api/v3/invoices/" + createInvoice.get("invoice").get("invoice_id") + "/status/sent?organization_id=" + orgId
 	type :POST
-	connection:"zohobooks"  // Change this to your connection name
+	connection:"zohobooks"  
+	// Change this to your connection name
 ];
 	info marksent;
   
@@ -126,7 +129,8 @@ for each  c in customerIDs
 	url :"https://books.zoho.com/api/v3/invoices/" + id + "?organization_id=" + orgId
 	type :PUT
 	parameters:financeCharge + ""
-	connection:"zohobooks"  // Change this to your connection name
+	connection:"zohobooks"  
+	// Change this to your connection name
 ];
 		info updateInvoice;
 	}
