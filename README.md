@@ -72,7 +72,8 @@ for each  page in pageIterationList
 	// Evaluate whether 'while' condition is satisfied
 	if(iterationComplete == false)
 	{
-		paramap = Map();                                //Change the paramap based on your requirement
+		//Change the paramap based on your requirement
+		paramap = Map();   
 		paramap.put("status","overdue");
 		paramap.put("cf_fc",false);
 		paramap.put("sort_column","customer_name");
@@ -81,7 +82,8 @@ for each  page in pageIterationList
 	url :"https://books.zoho.com/api/v3/invoices?organization_id=" + orgId + "&page=" + page + "&per_page=" + perPageLimit
 	type :GET
 	parameters:paramap
-	connection:"zohobooks"  // Change this to your connection name
+	connection:"zohobooks"
+	// Change this to your connection name
 ];
 		// Get records from API response. Add them to allRecords list.
 		records = response.get("invoices");
@@ -114,7 +116,8 @@ for each  r in allRecords
 		row_n.Outstanding_Amount=r.get("balance");
 		row_n.Invoice_URL="https://books.zoho.com/app#/invoices/" + r.get("invoice_id");
 		// The .002739 is 1/365, i.e. the rate of interest charged per day
-		row_n.Interest_Charge=days360(r.get("due_date").toDate(),today) * 0.18 * r.get("balance") * .002739;  // Arbitrary calculation for interest charge
+		row_n.Interest_Charge=days360(r.get("due_date").toDate(),today) * 0.18 * r.get("balance") * .002739;
+		// Arbitrary calculation for interest charge
 		row_n.Customer_ID=r.get("customer_id");
 		row_n.Current_Finance_Charge_Date=r.get("custom_field_hash").get("cf_next_finance_charge_unformatted");
 		// declare a variable to hold the collection of rows
@@ -193,7 +196,8 @@ for each  c in customerIDs
 				line_item = Map();
 				line_item.put("description",row.Invoice_No);
 				line_item.put("rate",row.Interest_Charge);
-				line_item.put("item_id",2066391000003720076);   // This is a custom item created for Finance Charge. Create your own and replace the ID here.
+				line_item.put("item_id",2066391000003720076);
+				// This is a custom item created for Finance Charge. Create your own and replace the ID here.
 				line_item.put("quantity",1);
 				line_items.add(line_item);
 				invoiceIDList.add(row.Invoice_ID);
@@ -224,7 +228,8 @@ for each  c in customerIDs
 [
 	url :"https://books.zoho.com/api/v3/invoices/" + createInvoice.get("invoice").get("invoice_id") + "/status/sent?organization_id=" + orgId
 	type :POST
-	connection:"zohobooks"  // Change this to your connection name
+	connection:"zohobooks"
+	// Change this to your connection name
 ];
 	info marksent;
   
@@ -283,7 +288,8 @@ for each  c in customerIDs
 	url :"https://books.zoho.com/api/v3/invoices/" + id + "?organization_id=" + orgId
 	type :PUT
 	parameters:financeCharge + ""
-	connection:"zohobooks"  // Change this to your connection name
+	connection:"zohobooks"
+	// Change this to your connection name
 ];
 		info updateInvoice;
 	}
@@ -338,7 +344,8 @@ for each  page in pageIterationList
 [
 	url :"https://www.zohoapis.com/crm/v2/" + zohoCrmModule + "?page=" + page + "&per_page=" + perPageLimit
 	type :GET
-	connection:"zohocrm" // Change this to your connection name
+	connection:"zohocrm"
+	// Change this to your connection name
 ];
 		// Get records from API response. Add them to allRecords list.
 		records = response.get("data");
@@ -404,7 +411,8 @@ for each  row in List_of_Students
 			url :"https://www.zohoapis.com/crm/v2/Contacts"
 			type :PUT
 			parameters:mp.toString()
-			connection:"zohocrm"	// Change this to your connection name
+			connection:"zohocrm"
+			// Change this to your connection name
 		];
 		info response;
 	}
